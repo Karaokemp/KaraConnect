@@ -1,0 +1,1 @@
+ffmpeg.exe;-f dshow;-video_size 1280x720;-framerate 25;-vcodec h264;-rtbufsize 702000k;-i video="%1$s":audio="%2$s";-copyinkf;-vcodec copy;-t %4$s;-c:a aac;-b:a 160k;-ac 2;-threads 2;-async 1;"%3$s"
