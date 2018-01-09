@@ -55,14 +55,14 @@ public class RestService {
 			return new String(Files.readAllBytes(Paths.get("ready.html")), Charset.forName("UTF-8"));
 		});
 		
-		get("/KaraConnect/find", (req, res) -> {
+		get("/find", (req, res) -> {
 			val query = req.queryParams("query");
 			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
 			System.out.println(query);
 			return mapper.writeValueAsString(DB.search(query));
 		});
 		
-		post("/KaraConnect/requestSong", "application/json", (req, res) -> {
+		post("/requestSong", "application/json", (req, res) -> {
 			val reqBody = mapper.readValue(new String(req.bodyAsBytes(), "UTF-8"), Req.class);
 			val songFile = DB.getSong(reqBody.songIndex);
 			val perfNumber = PlaylistFrame.getNextSerial();
@@ -101,6 +101,13 @@ public class RestService {
 //	        response.header("Access-Control-Allow-Headers", headers);
 	        // Note: this may or may not be necessary in your particular application
 //	        response.type("application/json");
+	    });
+
+	    get("/", (req, res) -> {
+	        res.raw().getOutputStream().write(Files.readAllBytes(Paths.get("html/index.html")));
+            			res.raw().getOutputStream().flush();
+            			res.raw().getOutputStream().close();
+            			return res.raw();
 	    });
 	    
 	    get("/:file", (req, res) -> {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import org.apache.commons.lang3.SystemUtils;
 
 import javax.swing.JOptionPane;
 
@@ -27,8 +28,10 @@ public class KaraRecorder {
 	public KaraRecorder() throws RecorderNotInitializedException {
 
 		try {
+		if (SystemUtils.IS_OS_WINDOWS) {
 			ffmpeg = new FFmpeg(exec_dir + "/ffmpeg");
 			ffprobe = new FFprobe(exec_dir + "/ffprobe");
+		}
 			// pb.
 		} catch (IOException e) {
 			throw new RecorderNotInitializedException();

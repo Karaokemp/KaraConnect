@@ -1150,7 +1150,7 @@ public class PlaylistFrame extends BaseFrame {
     }
     
     void loadCaptureDevices() throws Exception {
-    	if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC){
+    	if (SystemUtils.IS_OS_LINUX){
             updateCombo(cmbAudioRec, mediaPlayerComponent.getMediaPlayerFactory().newAudioMediaDiscoverer().getMediaList().items(), " ");
             updateCombo(cmbVideoRec, mediaPlayerComponent.getMediaPlayerFactory().newVideoMediaDiscoverer().getMediaList().items(), "920");
     	}
