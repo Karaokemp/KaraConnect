@@ -19,3 +19,4 @@ compile it to production then put the new compiled code into the html directory 
 How to work on souce code:
 you need to install Lombok plugin to you IDE. read about it here: https://projectlombok.org/
 then import the project as existing maven project
+To launch the project from within the ide create a java application running configuration that VlcjPlayer is the main type
