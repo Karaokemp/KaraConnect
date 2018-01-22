@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import spark.Spark;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.log.NativeLog;
@@ -96,8 +97,8 @@ public class VlcjPlayer {
 		}
 		
 		new NativeDiscovery().discover();
-		RestService.init();
-		
+		Spark.port(8888);
+		RestService.restInit();
 
 		setLookAndFeel();
 		Data.relaunch = args.length > 0;

@@ -12,7 +12,7 @@
 	<url>http://www.facebook.com/Karaokemp</url>
 	<inceptionYear>2015</inceptionYear>
 
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<licenses>
 		<license>
@@ -138,50 +138,50 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>truezip-maven-plugin</artifactId>
-				<version>1.2</version>
-				<executions>
-					<execution>
-						<id>copy-out-files</id>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<phase>install</phase>
-						<configuration>
-							<files>
-								<file>
-									<source>${archive}/filesToExtract/announcements</source>
-									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory>
-								</file>
-								<file>
-									<source>${archive}/filesToExtract/ffmpeg</source>
-									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory>
-								</file>
-								<file>
-									<source>${archive}</source>
-									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory>
-								</file>
-								<file>
-									<source>${archive}/filesToExtract/html</source>
-									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory>
-								</file>
-							</files>
-							<fileset>
-								<directory>${archive}/filesToExtract</directory>
-								<includes>
-									<include>*</include>
-								</includes>
-								<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory>
-							</fileset>
-						</configuration>
-					</execution>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.codehaus.mojo</groupId> -->
+<!-- 				<artifactId>truezip-maven-plugin</artifactId> -->
+<!-- 				<version>1.2</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>copy-out-files</id> -->
+<!-- 						<goals> -->
+<!-- 							<goal>copy</goal> -->
+<!-- 						</goals> -->
+<!-- 						<phase>install</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<files> -->
+<!-- 								<file> -->
+<!-- 									<source>${archive}/filesToExtract/announcements</source> -->
+<!-- 									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory> -->
+<!-- 								</file> -->
+<!-- 								<file> -->
+<!-- 									<source>${archive}/filesToExtract/ffmpeg</source> -->
+<!-- 									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory> -->
+<!-- 								</file> -->
+<!-- 								<file> -->
+<!-- 									<source>${archive}</source> -->
+<!-- 									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory> -->
+<!-- 								</file> -->
+<!-- 								<file> -->
+<!-- 									<source>${archive}/filesToExtract/html</source> -->
+<!-- 									<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory> -->
+<!-- 								</file> -->
+<!-- 							</files> -->
+<!-- 							<fileset> -->
+<!-- 								<directory>${archive}/filesToExtract</directory> -->
+<!-- 								<includes> -->
+<!-- 									<include>*</include> -->
+<!-- 								</includes> -->
+<!-- 								<outputDirectory>${project.build.directory}/DjPlaylist</outputDirectory> -->
+<!-- 							</fileset> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
 
 
 
-				</executions>
-			</plugin>
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 
 		</plugins>
 		<resources>
