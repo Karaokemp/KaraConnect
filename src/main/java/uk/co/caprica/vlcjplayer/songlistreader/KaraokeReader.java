@@ -17,7 +17,6 @@ public class KaraokeReader {
 		songsList = new ArrayList<String>(30300);
 		File root = new File(rootDir);
 		DeleteDbFiles.execute(".", DB.DB_NAME, true);
-		DB.init();
 		
 		readSongs(root);
 		

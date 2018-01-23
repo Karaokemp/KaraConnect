@@ -31,6 +31,10 @@ public class DB {
     private static final String INSERT = "INSERT INTO SONGS VALUES(%d, '%s')";
     
     private static final JdbcConnectionPool pool = getConnectionPool();
+    
+    static {
+    	init();
+    }
 
     public static void insertFiles(String... files) {
     	insertFiles(Arrays.asList(files));
@@ -63,8 +67,8 @@ public class DB {
     	try {
 			@Cleanup val conn = getConnection();
 			@Cleanup Statement stmt = conn.createStatement();
-            stmt.execute("CREATE TABLE SONGS(id int primary key, name varchar)");
-            stmt.execute("CREATE INDEX SONG_INDEX ON SONGS(name)");
+            stmt.execute("CREATE TABLE IF NOT EXISTS SONGS(id int primary key, name varchar)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS SONG_INDEX ON SONGS(name)");
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}

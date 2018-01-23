@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +31,8 @@ import uk.co.caprica.vlcjplayer.songlistreader.KaraokeReader;
 import uk.co.caprica.vlcjplayer.view.playlist.PlaylistFrame;
 
 public class RestService implements SparkApplication{
+	public static final Logger LOGGER = Logger.getLogger(RestService.class.getName());
+	
 	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	static {
@@ -111,7 +115,7 @@ public class RestService implements SparkApplication{
 		get("/api/find", (req, res) -> {
 			val query = req.queryParams("query");
 			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
-			System.out.println(query);
+			LOGGER.log(Level.FINER, "query: " + query);
 			return mapper.writeValueAsString(DB.search(query));
 		});
 		
@@ -179,8 +183,8 @@ public class RestService implements SparkApplication{
 			default:
 				break;
 			}
-	    	System.out.println(file);
-	    	System.out.println("SPARKPATH " + RestService.class.getClassLoader().getResource("").getPath());
+	    	LOGGER.log(Level.FINER, "file: " + file);
+	    	LOGGER.log(Level.FINER, "SPARKPATH " + RestService.class.getClassLoader().getResource("").getPath());
 			res.raw().getOutputStream().write(Files.readAllBytes(Paths.get("html/" + file)));
 			res.raw().getOutputStream().flush();
 			res.raw().getOutputStream().close();
