@@ -45,7 +45,12 @@ import com.google.common.eventbus.Subscribe;
 
 final public class ControlsPane extends BasePanel {
 
-    private final Icon playIcon = newIcon("play");
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2111501790572237824L;
+
+	private final Icon playIcon = newIcon("play");
 
     private final Icon pauseIcon = newIcon("pause");
 
@@ -165,7 +170,12 @@ final public class ControlsPane extends BasePanel {
 
     private class BigButton extends JButton {
 
-        private BigButton() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8144036361040943211L;
+
+		private BigButton() {
             setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             setHideActionText(true);
         }
@@ -173,7 +183,12 @@ final public class ControlsPane extends BasePanel {
 
     private class StandardButton extends JButton {
 
-        private StandardButton() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -2407454848235839869L;
+
+		private StandardButton() {
             setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
             setHideActionText(true);
         }

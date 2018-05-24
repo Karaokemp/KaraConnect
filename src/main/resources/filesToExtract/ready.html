@@ -1,0 +1,41 @@
+<html>
+<head>
+<style>
+button {
+background-color: red;
+    height: 400px;
+    width: 400px;
+    border-radius: 100%;
+    border: 14px solid #000;
+    font-size: 70;
+}
+div {
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    width:30em;
+    height:18em;
+    margin-top: -13em; /*set to a negative number 1/2 of your height*/
+    margin-left: -15em; /*set to a negative number 1/2 of your width*/
+   
+}
+</style>
+<script>
+function ready(){
+    //alert("you done clicked the button");
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/KaraConnect/signalReady", true);
+	xhr.send();
+	document.getElementById("but").style.display = "none";
+	setTimeout(function() {
+		document.getElementById("but").style.display = "inline";    
+	}, 3000);
+}
+</script>
+</head>
+<body>
+<div>
+<button onclick="ready()" id="but">Let's Rock!<br>!יאללה</button>
+</div>
+</body>
+</html>

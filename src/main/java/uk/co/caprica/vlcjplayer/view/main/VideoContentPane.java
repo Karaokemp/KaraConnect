@@ -10,7 +10,12 @@ import uk.co.caprica.vlcjplayer.view.image.ImagePane;
 
 final class VideoContentPane extends JPanel {
 
-    private static final String NAME_DEFAULT = "default";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6221988282365733223L;
+
+	private static final String NAME_DEFAULT = "default";
 
     private static final String NAME_VIDEO = "video";
 

@@ -21,6 +21,10 @@ import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import uk.co.caprica.vlcjplayer.VlcjPlayer;
 
 public class KaraLauncher extends JDialog{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2091513657677171666L;
 	static String java_home = "jdk";
 	static String exec_dir = ".";
 	public static void main(String[] args) {

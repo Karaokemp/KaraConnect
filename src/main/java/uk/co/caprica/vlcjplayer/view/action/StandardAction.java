@@ -24,7 +24,12 @@ import javax.swing.Action;
 
 public abstract class StandardAction extends AbstractAction {
 
-    public StandardAction(Resource resource) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2601205370800518130L;
+
+	public StandardAction(Resource resource) {
         putValue(Action.NAME             , resource.name      ());
         putValue(Action.MNEMONIC_KEY     , resource.mnemonic  ());
         putValue(Action.ACCELERATOR_KEY  , resource.shortcut  ());

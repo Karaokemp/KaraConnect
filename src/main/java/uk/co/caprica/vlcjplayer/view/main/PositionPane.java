@@ -40,7 +40,12 @@ import com.google.common.eventbus.Subscribe;
 
 final public class PositionPane extends JPanel {
 
-    private final JLabel timeLabel;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1114010902700638258L;
+
+	private final JLabel timeLabel;
 
     private final JSlider positionSlider;
 

@@ -74,7 +74,12 @@ public final class Application {
     private Application() {
         eventBus = new EventBus();
         mediaPlayerComponent = new EmbeddedMediaPlayerComponent() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 3106592667852822185L;
+
+			@Override
             protected String[] onGetMediaPlayerFactoryExtraArgs() {
                 return new String[] {"--no-osd", "-vvv"}; // Disables the display of the snapshot filename (amongst other things)
             }
@@ -90,7 +95,12 @@ public final class Application {
     
     public EmbeddedMediaPlayerComponent newMPC(){
     	mediaPlayerComponent = new EmbeddedMediaPlayerComponent() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -6380843157527856509L;
+
+			@Override
             protected String[] onGetMediaPlayerFactoryExtraArgs() {
                 return new String[] {"--no-osd", "-vvv"}; // Disables the display of the snapshot filename (amongst other things)
             }

@@ -148,7 +148,7 @@ public class Frame {
     }
 
     if ((flags & FLAG_CHECKSUM) == FLAG_CHECKSUM) {
-      long checksum = in.readInt();
+      in.readInt();
       // TODO Test checksum
     }
 

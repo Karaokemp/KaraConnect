@@ -26,7 +26,11 @@ import uk.co.caprica.vlcjplayer.view.action.Resource;
 
 final class StereoModeAction extends MediaPlayerAction {
 
-    private final Object mode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3200526057605923920L;
+	private final Object mode;
 
     StereoModeAction(Resource resource, MediaPlayer mediaPlayer, Object mode) {
         super(resource, mediaPlayer);

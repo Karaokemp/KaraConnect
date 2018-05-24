@@ -33,7 +33,12 @@ import com.google.common.eventbus.Subscribe;
 
 final public class StatusBar extends JPanel {
 
-    private final JLabel titleLabel;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6644984082916298899L;
+
+	private final JLabel titleLabel;
 
     private final JLabel rateLabel;
 

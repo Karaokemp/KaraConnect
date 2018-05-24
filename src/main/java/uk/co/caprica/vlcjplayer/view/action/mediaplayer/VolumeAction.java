@@ -26,7 +26,11 @@ import uk.co.caprica.vlcjplayer.view.action.Resource;
 
 final class VolumeAction extends MediaPlayerAction {
 
-    private final int delta;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6017283512774003373L;
+	private final int delta;
 
     VolumeAction(Resource resource, MediaPlayer mediaPlayer, int delta) {
         super(resource, mediaPlayer);

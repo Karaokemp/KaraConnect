@@ -25,7 +25,11 @@ import javax.swing.border.Border;
 
 public class BorderedStandardLabel extends StandardLabel {
 
-    private static final Border STANDARD_BORDER = BorderFactory.createCompoundBorder(
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 333460355659856953L;
+	private static final Border STANDARD_BORDER = BorderFactory.createCompoundBorder(
         BorderFactory.createBevelBorder(BevelBorder.LOWERED),
         BorderFactory.createEmptyBorder(1, 2, 1, 2)
     );

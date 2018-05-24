@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import net.bramp.ffmpeg.FFmpegUtils;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 
-import org.apache.commons.lang3.math.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,7 +27,11 @@ import javax.swing.JLabel;
 
 public class StandardLabel extends JLabel {
 
-    private final String template;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1105536880560299457L;
+	private final String template;
 
     public StandardLabel() {
         this(null);

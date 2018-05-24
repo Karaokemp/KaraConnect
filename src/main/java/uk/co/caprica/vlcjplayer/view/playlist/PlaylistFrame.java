@@ -581,8 +581,6 @@ public class PlaylistFrame extends BaseFrame {
         
         boolean settingsExist = checkNotEmpty(Data.settingsFileName);
 
-        loadCaptureDevices();
-        
         fileChooser = new JFileChooser(); 
         if (!Data.relaunch){
 	        if (settingsExist){
@@ -620,6 +618,7 @@ public class PlaylistFrame extends BaseFrame {
         }
         addEventListeners();
         Wachutu.init(txtRootFolder.getText());
+        loadCaptureDevices();
         setVisible(true);
         try {
 			recorder = new KaraRecorder();
@@ -749,7 +748,7 @@ public class PlaylistFrame extends BaseFrame {
     	for (int i = mainList.getRowCount() - 1; i >= 0; i--){
     		if (!(boolean)getVal(i, 0, mainList)){
     			val interval = new Date(now - Long.valueOf(getVal(i, TIME, mainList).toString()));
-    			interval.setHours(interval.getHours() - 2);
+    			interval.setHours(interval.getHours());
     			setVal(getWait(dateFormat.print(interval.getTime())), i, WAIT);
     		}
     	}
@@ -1180,8 +1179,10 @@ public class PlaylistFrame extends BaseFrame {
     	@Cleanup val br =new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("UTF-8")));
     	String line = br.readLine();
     	while (line != null){
-    		cmb.addItem(new ComboListItem(line, line));
-    		line = br.readLine();
+    		if (line.contains("920") || type.equals("audio")) {
+    			cmb.addItem(new ComboListItem(line, line));
+    		}
+			line = br.readLine();
     	}
     }
     

@@ -8,3 +8,8 @@ target/
 *rebel*
 *eclipse*
 /.settings/
+/songsDB.mv.db
+/SongsList.csv
+/Errors.log
+/DjPlaylist.properties
+/Actions.log

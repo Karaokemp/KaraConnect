@@ -26,7 +26,11 @@ import uk.co.caprica.vlcjplayer.view.action.Resource;
 
 final class RateAction extends MediaPlayerAction {
 
-    private final float rate;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7057582543846618903L;
+	private final float rate;
 
     RateAction(Resource resource, MediaPlayer mediaPlayer, float rate) {
         super(resource, mediaPlayer);

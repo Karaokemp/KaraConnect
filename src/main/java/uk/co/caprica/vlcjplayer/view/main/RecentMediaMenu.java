@@ -56,7 +56,11 @@ final class RecentMediaMenu extends OnDemandMenu {
 
     private class PlayRecentAction extends AbstractAction {
 
-        private final String mrl;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -3665788789433858185L;
+		private final String mrl;
 
         public PlayRecentAction(int number, String mrl) {
             super(String.format("%d: %s", number, mrl));
@@ -73,7 +77,12 @@ final class RecentMediaMenu extends OnDemandMenu {
 
     private class ClearRecentMediaAction extends StandardAction {
 
-        public ClearRecentMediaAction() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -5744861517645638430L;
+
+		public ClearRecentMediaAction() {
             super(resource("menu.media.item.recent.item.clear"));
         }
 

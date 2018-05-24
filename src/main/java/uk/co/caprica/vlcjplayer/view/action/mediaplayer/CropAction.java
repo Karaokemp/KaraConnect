@@ -26,7 +26,11 @@ import uk.co.caprica.vlcjplayer.view.action.Resource;
 
 final class CropAction extends MediaPlayerAction {
 
-    private final String cropGeometry;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5597818697781276681L;
+	private final String cropGeometry;
 
     CropAction(Resource resource, MediaPlayer mediaPlayer, String cropGeometry) {
         super(resource, mediaPlayer);

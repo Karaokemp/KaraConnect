@@ -21,7 +21,11 @@ package uk.co.caprica.vlcjplayer.view;
 
 public class SmallStandardLabel extends StandardLabel {
 
-    private static final float FONT_SIZE = 9.0f;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1706904890047609845L;
+	private static final float FONT_SIZE = 9.0f;
 
     public SmallStandardLabel() {
         this(null);

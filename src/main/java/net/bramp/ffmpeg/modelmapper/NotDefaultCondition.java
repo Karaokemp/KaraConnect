@@ -15,7 +15,7 @@ import org.modelmapper.spi.MappingContext;
  */
 public class NotDefaultCondition<S, D> implements Condition<S, D> {
 
-  public final static NotDefaultCondition notDefault = new NotDefaultCondition();
+  public final static NotDefaultCondition<?,?> notDefault = new NotDefaultCondition<>();
 
   @Override
   public boolean applies(MappingContext<S, D> context) {

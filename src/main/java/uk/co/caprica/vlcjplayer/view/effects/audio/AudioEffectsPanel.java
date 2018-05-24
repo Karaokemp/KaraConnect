@@ -28,7 +28,12 @@ import uk.co.caprica.vlcjplayer.view.BasePanel;
 
 public class AudioEffectsPanel extends BasePanel {
 
-    private final JTabbedPane tabbedPane;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7275827288457453714L;
+
+	private final JTabbedPane tabbedPane;
 
     private final EqualizerPanel equalizerPanel;
 

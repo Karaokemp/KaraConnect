@@ -27,6 +27,7 @@ import com.sun.nio.file.SensitivityWatchEventModifier;
 
 import uk.co.caprica.vlcjplayer.songlistreader.KaraokeReader.KaraFilter;
 
+@SuppressWarnings("restriction")
 public class Wachutu {
 	
 	public static final Logger LOGGER = Logger.getLogger(Wachutu.class.getName());
@@ -40,10 +41,14 @@ public class Wachutu {
     private static final KaraFilter filter = new KaraFilter();
     
     public static void init(String root) throws IOException {
-    	rootFolder = new File(root);
-        watcher = FileSystems.getDefault().newWatchService();
-        executor = Executors.newSingleThreadExecutor();
-        startRecursiveWatcher();
+    	try {
+			rootFolder = new File(root);
+			watcher = FileSystems.getDefault().newWatchService();
+			executor = Executors.newSingleThreadExecutor();
+			startRecursiveWatcher();
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
     }
 
     public static void cleanup() {

@@ -41,7 +41,12 @@ import uk.co.caprica.vlcjplayer.view.BasePanel;
 
 public class VideoAdjustPanel extends BasePanel {
 
-    private final EmbeddedMediaPlayerComponent mediaPlayerComponent;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7511574340840967616L;
+
+	private final EmbeddedMediaPlayerComponent mediaPlayerComponent;
 
     private final JCheckBox enableCheckBox;
     private final JLabel hueLabel;

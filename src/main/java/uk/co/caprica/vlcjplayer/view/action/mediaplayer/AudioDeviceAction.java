@@ -26,7 +26,11 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 
 public final class AudioDeviceAction extends MediaPlayerAction {
 
-    private final AudioDevice audioDevice;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3507468418917932796L;
+	private final AudioDevice audioDevice;
 
     public AudioDeviceAction(AudioDevice audioDevice, MediaPlayer mediaPlayer) {
         super(audioDevice.getLongName(), mediaPlayer);

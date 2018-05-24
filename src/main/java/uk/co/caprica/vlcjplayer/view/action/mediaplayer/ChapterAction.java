@@ -25,7 +25,11 @@ import uk.co.caprica.vlcj.player.MediaPlayer;
 
 public final class ChapterAction extends MediaPlayerAction {
 
-    private final int chapter;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8318910013512607372L;
+	private final int chapter;
 
     public ChapterAction(String name, MediaPlayer mediaPlayer, int chapter) {
         super(name, mediaPlayer);

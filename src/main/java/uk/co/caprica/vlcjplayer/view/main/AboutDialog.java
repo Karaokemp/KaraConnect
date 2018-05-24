@@ -43,7 +43,12 @@ import uk.co.caprica.vlcj.version.LibVlcVersion;
 
 final class AboutDialog extends JDialog {
 
-    AboutDialog(Window owner) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9159057228235442665L;
+
+	AboutDialog(Window owner) {
         super(owner, resources().getString("dialog.about"), Dialog.ModalityType.DOCUMENT_MODAL);
 
         Properties properties = new Properties();
@@ -120,7 +125,12 @@ final class AboutDialog extends JDialog {
 
     private class ValueLabel extends JLabel {
 
-        public ValueLabel() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8595718080095164467L;
+
+		public ValueLabel() {
             setFont(getFont().deriveFont(Font.BOLD));
         }
     }

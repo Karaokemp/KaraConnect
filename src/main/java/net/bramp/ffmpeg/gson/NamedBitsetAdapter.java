@@ -52,6 +52,8 @@ public class NamedBitsetAdapter<T> extends TypeAdapter<T> {
         return Optional.of(reader.nextBoolean());
       case NUMBER:
         return Optional.of(reader.nextInt() != 0);
+	default:
+		break;
     }
 
     reader.skipValue();

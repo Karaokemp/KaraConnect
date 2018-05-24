@@ -20,6 +20,10 @@ import uk.co.caprica.vlcjplayer.view.playlist.PlaylistFrame.GapTable;
 
 public class PlaylistDND extends TransferHandler {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5591257139342134137L;
 	static final DataFlavor[] flavors = {new DataFlavor(Integer.class, "Integer"), DataFlavor.javaFileListFlavor};
 	
 	public int getSourceActions(JComponent c) {

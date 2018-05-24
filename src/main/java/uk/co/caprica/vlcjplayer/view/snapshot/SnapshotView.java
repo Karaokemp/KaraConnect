@@ -47,7 +47,12 @@ import com.google.common.io.Files;
  */
 public class SnapshotView extends JFrame {
 
-    private static final String DEFAULT_FILE_EXTENSION = "png";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1062215261454389135L;
+
+	private static final String DEFAULT_FILE_EXTENSION = "png";
 
     private final JFileChooser fileChooser = new JFileChooser();
 
@@ -90,7 +95,12 @@ public class SnapshotView extends JFrame {
 
     private class ActionPane extends JPanel {
 
-        private ActionPane() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -736899178332385582L;
+
+		private ActionPane() {
             setLayout(new MigLayout("fillx", "push[]", "[]"));
             JButton saveButton = new JButton("Save");
             add(saveButton);

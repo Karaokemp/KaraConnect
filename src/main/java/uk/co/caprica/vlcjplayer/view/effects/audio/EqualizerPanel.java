@@ -48,7 +48,12 @@ import uk.co.caprica.vlcjplayer.view.StandardLabel;
 
 public class EqualizerPanel extends BasePanel implements ChangeListener, ItemListener, ActionListener {
 
-    private static final String BAND_INDEX_PROPERTY = "equalizerBandIndex";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8448358704174319515L;
+
+	private static final String BAND_INDEX_PROPERTY = "equalizerBandIndex";
 
     private final String dbFormat = "%.1f dB";
 
