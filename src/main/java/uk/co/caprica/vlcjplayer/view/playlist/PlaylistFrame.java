@@ -27,7 +27,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
@@ -56,24 +60,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.prefs.Preferences;
 
-import javax.swing.DropMode;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
@@ -108,7 +95,7 @@ import uk.co.caprica.vlcjplayer.view.main.StatusBar;
 import uk.co.caprica.vlcjplayer.view.playlist.KaraRecorder.RecorderNotInitializedException;
 
 @SuppressWarnings("serial")
-public class PlaylistFrame extends BaseFrame {
+public class PlaylistFrame extends BaseFrame implements ActionListener {
 	
 	static final int PLAYED = 0;
 	static final int PERF = 1;
@@ -144,7 +131,16 @@ public class PlaylistFrame extends BaseFrame {
     private  EmbeddedMediaPlayerComponent mediaPlayerComponent;
     
     static PlaylistFrame instance;
-    
+
+	public JPopupMenu mainListPopupMenu;
+	private JMenuItem mainListItemPlay;
+	private JMenuItem mainListItemRemove;
+	private JMenuItem mainListItemMarkFaulty;
+
+	public JPopupMenu gapListPopupMenu;
+	private JMenuItem gapListItemPlay;
+	private JMenuItem gapListItemRemove;
+
     private boolean isPlayingGap = true;
     private boolean shouldContinueGap = true;
     
@@ -197,6 +193,7 @@ public class PlaylistFrame extends BaseFrame {
     boolean isAutoPilot = false;
     Integer waitingForNumber = null;
     boolean isAnnouncing = false;
+	boolean hasManualSongs = false;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy HH-mm");
 	JTextField txtRecFolder;
 	static DateTimeFormatter dateFormat = DateTimeFormat.forPattern("HH:mm:ss");
@@ -288,6 +285,19 @@ public class PlaylistFrame extends BaseFrame {
 		gapList.getColumnModel().getColumn(1).setMinWidth(0);
 		gapList.getColumnModel().getColumn(1).setMaxWidth(0);
 		gapList.setFillsViewportHeight(true);
+
+		//right-click support
+		gapListPopupMenu = new JPopupMenu();
+		gapListItemPlay = new JMenuItem("Play");
+		gapListItemRemove = new JMenuItem("Remove");
+		gapListItemPlay.addActionListener(this);
+		gapListItemRemove.addActionListener(this);
+		gapListPopupMenu.add(gapListItemPlay);
+		gapListPopupMenu.add(gapListItemRemove);
+		gapList.setComponentPopupMenu(gapListPopupMenu);
+		gapList.addMouseListener(new TableMouseListener(gapList));
+
+
 		mainList = new JTable();
 		mainList.setBackground(new Color(221, 160, 221));
 		mainList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -297,11 +307,11 @@ public class PlaylistFrame extends BaseFrame {
 		mainModel = new DefaultTableModel(
 				new Object[][] {},
 				new String[] {
-					"Played?", "Participant Name", "Song Name", "File Name", "Time", "Email", "Waiting", "Perf Number", "Retries" 
+					"Played?", "Participant Name", "Song Name", "File Name", "Time", "Email", "Waiting", "AP #", "Retries"
 				}
 			) {
 				Class<?>[] columnTypes = new Class[] {
-					Boolean.class, String.class, String.class, String.class, Long.class, String.class, WaitingTime.class, String.class, Long.class
+					Boolean.class, String.class, String.class, String.class, Long.class, String.class, WaitingTime.class, String.class, Long.class, Integer.class
 				};
 				public Class<?> getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
@@ -335,16 +345,32 @@ public class PlaylistFrame extends BaseFrame {
 		mainList.getColumnModel().getColumn(5).setMaxWidth(0);
 		mainList.getColumnModel().getColumn(6).setResizable(false);
 		mainList.getColumnModel().getColumn(6).setPreferredWidth(70);
-		mainList.getColumnModel().getColumn(7).setResizable(false);
-		mainList.getColumnModel().getColumn(7).setPreferredWidth(0);
-		mainList.getColumnModel().getColumn(7).setMinWidth(0);
-		mainList.getColumnModel().getColumn(7).setMaxWidth(0);
+		mainList.getColumnModel().getColumn(7).setResizable(true);
+		mainList.getColumnModel().getColumn(7).setPreferredWidth(20);
+		//mainList.getColumnModel().getColumn(7).setMinWidth(0);
+		//mainList.getColumnModel().getColumn(7).setMaxWidth(0);
 		mainList.getColumnModel().getColumn(8).setResizable(false);
 		mainList.getColumnModel().getColumn(8).setPreferredWidth(0);
 		mainList.getColumnModel().getColumn(8).setMinWidth(0);
 		mainList.getColumnModel().getColumn(8).setMaxWidth(0);
 		mainList.setDefaultRenderer(WaitingTime.class, new KaraRenderer());
-		
+
+		//right-click support
+		mainListPopupMenu = new JPopupMenu();
+		mainListItemPlay = new JMenuItem("Play");
+		mainListItemRemove = new JMenuItem("Remove");
+		mainListItemMarkFaulty = new JMenuItem("Mark Faulty!");
+		mainListItemPlay.addActionListener(this);
+		mainListItemRemove.addActionListener(this);
+		mainListItemMarkFaulty.addActionListener(this);
+		mainListPopupMenu.add(mainListItemPlay);
+		mainListPopupMenu.add(mainListItemRemove);
+		mainListPopupMenu.addSeparator();
+		mainListPopupMenu.add(mainListItemMarkFaulty);
+		mainList.setComponentPopupMenu(mainListPopupMenu);
+		mainList.addMouseListener(new TableMouseListener(mainList));
+
+
 		JLabel lblNewLabel = new JLabel("Karaoke Playlist");
 		lblNewLabel.setForeground(new Color(221, 160, 221));
 		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 24));
@@ -633,11 +659,52 @@ public class PlaylistFrame extends BaseFrame {
     		LOGGER.log(Level.SEVERE, "Exception", ex);
     	}
     }
-    	
+
+    private void removeSelectedSong() {
+		try {
+			removeSong(mainModel, mainList.getSelectedRow(), true);
+
+			//update statuses and gui for auto-pilot, in case all manual songs are done
+			if (isAutoPilot) {
+				hasManualSongs = hasPendingManualSongs();
+				if (!hasManualSongs)
+					switchGuiToAutoPilot();
+			}
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "Exception", e1);;
+		}
+	}
+
+	private void removeSelectedGap() {
+		try {
+			removeSong(gapModel, gapList.getSelectedRow(), false);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "Exception", e1);;
+		}
+	}
+
+	public void actionPerformed(ActionEvent event) {
+		JMenuItem menu = (JMenuItem) event.getSource();
+		if (menu == mainListItemPlay) {
+			playKaraokeSong(true);
+		} else if (menu == mainListItemRemove) {
+			removeSelectedSong();
+		} else if (menu == mainListItemMarkFaulty) {
+			markFaulty();
+		} else if (menu == gapListItemPlay) {
+			playGapFromStart();
+		} else if (menu == gapListItemRemove) {
+			removeSelectedGap();
+		}
+	}
+
     private static class AutomationTask extends TimerTask{
     	@Override
 		public void run() {
-			if (instance.isAutoPilot && instance.isPlayingGap && instance.waitingForNumber == null){
+			if (instance.isAutoPilot && instance.isPlayingGap && instance.waitingForNumber == null && !instance.hasManualSongs){
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -792,12 +859,7 @@ public class PlaylistFrame extends BaseFrame {
     void addEventListeners(){
     	btnPlayMain.addActionListener(new KaraAction() {
 			public void performAction() {
-				try {
-					playKaraokeSong();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					LOGGER.log(Level.SEVERE, "Exception", e1);;
-				}
+				playKaraokeSong();
 			}
 		});
     	
@@ -809,24 +871,14 @@ public class PlaylistFrame extends BaseFrame {
 		
 		btnRemoveMain.addActionListener(new KaraAction() {
 			public void performAction() {
-				try {
-					removeSong(mainModel, mainList.getSelectedRow(), true);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					LOGGER.log(Level.SEVERE, "Exception", e1);;
-				}
+				removeSelectedSong();
 			}
 		});
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.addWindowListener(new KaraWindowAdapter(this));
 		btnClearPlayed.addActionListener(new KaraAction() {
 			public void performAction() {
-				try {
-					clearPlayed();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					LOGGER.log(Level.SEVERE, "Exception", e1);;
-				}
+				clearPlayed();
 			}
 		});
 		btnAddMain.addActionListener(new KaraAction() {
@@ -836,12 +888,7 @@ public class PlaylistFrame extends BaseFrame {
 		});
 		btnRemoveGap.addActionListener(new KaraAction() {
 			public void performAction() {
-				try {
-					removeSong(gapModel, gapList.getSelectedRow(), false);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					LOGGER.log(Level.SEVERE, "Exception", e1);;
-				}
+				removeSelectedGap();
 			}
 		});
 		btnAddGap.addActionListener(new KaraAction() {
@@ -882,12 +929,7 @@ public class PlaylistFrame extends BaseFrame {
 		});
 		btnMarkFaulty.addActionListener(new KaraAction() {
 			public void performAction() {
-				try {
-					markFaulty();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					LOGGER.log(Level.SEVERE, "Exception", e1);;
-				}
+				markFaulty();
 			}
 		});
 
@@ -1085,11 +1127,21 @@ public class PlaylistFrame extends BaseFrame {
 				}else if (!isAutoPilot && tglbtnAutoPilot.isSelected()){
 					val answer = JOptionPane.showConfirmDialog(instance, "Are you sure you want to launch auto pilot?!", "Launch Auto Pilot", JOptionPane.YES_NO_OPTION);
 					if (answer == JOptionPane.YES_OPTION){
+
+						hasManualSongs = false;
+						lblAutoPilot.setText("Auto Pilot Pending");
+						if (hasPendingManualSongs()) {
+							JOptionPane.showMessageDialog(instance, "Finish playing all current songs (or remove them) for auto playing to start. Newly requested songs will be designated for auto-play.", "Playlist is not empty", JOptionPane.INFORMATION_MESSAGE);
+							hasManualSongs = true;
+						} else {
+							switchGuiToAutoPilot();
+						}
+
 						isAutoPilot = true;
-						karaokeControlsPanel.setVisible(false);
-						gapControlsPanel.setVisible(false);
+
+						//gapControlsPanel.setVisible(false);
 						lblAutoPilot.setVisible(true);
-						clearNotNumbered();
+						//clearNotNumbered();
 						timer.schedule(new AutomationTask(), 10000l, 10000l);
 						if (!mediaPlayerComponent.getMediaPlayer().isPlaying()){
 							playGapFromStart();
@@ -1101,6 +1153,12 @@ public class PlaylistFrame extends BaseFrame {
 			}
 		});
     }
+
+    void switchGuiToAutoPilot() {
+		clearPlayed();
+		karaokeControlsPanel.setVisible(false);
+		lblAutoPilot.setText("Auto Pilot On!");
+	}
     
     boolean  prepareGapList(String action){
     	val savedDir = new File("SavedPlaylists");
@@ -1218,14 +1276,19 @@ public class PlaylistFrame extends BaseFrame {
     }
     
     
-    void markFaulty() throws Exception {
-    	if (mainList.getSelectedRow() != -1){
-    		val answer = JOptionPane.showConfirmDialog(instance, "Are you sure you want to mark this as a faulty song?", "Faulty Song", JOptionPane.YES_NO_OPTION);
-			if (answer == JOptionPane.YES_OPTION){
-				@Cleanup val ps = new PrintStream(new FileOutputStream("FaultySongs.list", true), true, "UTF-8"); 
-				ps.println(getVal(mainList.getSelectedRow(), 3, mainList).toString());
+    void markFaulty() {
+		try {
+			if (mainList.getSelectedRow() != -1){
+				val answer = JOptionPane.showConfirmDialog(instance, "Are you sure you want to mark this as a faulty song?", "Faulty Song", JOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION){
+					@Cleanup val ps = new PrintStream(new FileOutputStream("FaultySongs.list", true), true, "UTF-8");
+					ps.println(getVal(mainList.getSelectedRow(), 3, mainList).toString());
+				}
 			}
-    	}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "Exception", e1);;
+		}
     }
     
     void continuePlayGap(){
@@ -1251,19 +1314,36 @@ public class PlaylistFrame extends BaseFrame {
 		gapModel.moveRow(selected, selected, gapModel.getRowCount() - 1);
     }
     
-    void clearPlayed() throws Exception {
+    void clearPlayed() {
     	for (int i = mainList.getRowCount() - 1; i >= 0; i--){
     		try {
-				if ((boolean)getVal(i, PLAYED, mainList) && (new Date().getTime() - Long.valueOf(getVal(i, TIME, mainList).toString()) >  1800000)){
+				if ((boolean)getVal(i, PLAYED, mainList) || (new Date().getTime() - Long.valueOf(getVal(i, TIME, mainList).toString()) >  1800000)){
 					mainModel.removeRow(i);
+				}
+				savePlaylistToFile(Data.playlistFileName);
+			} catch (NumberFormatException e) {
+				LOGGER.log(Level.SEVERE, "error with: " + getVal(i, TIME, mainList).toString(), e);
+			} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "Exception", e1);;
+		}
+    	}
+    }
+
+    boolean hasPendingManualSongs() {
+		for (int i = mainList.getRowCount() - 1; i >= 0; i--){
+			try {
+				boolean manualSong = getVal(i, PERF_NUMBER, mainList) == null || getVal(i, PERF_NUMBER, mainList).toString().equals("");
+				boolean played = ((boolean)getVal(i, PLAYED, mainList) || (new Date().getTime() - Long.valueOf(getVal(i, TIME, mainList).toString()) >  1800000));
+				if (manualSong && !played) {
+					return true;
 				}
 			} catch (NumberFormatException e) {
 				LOGGER.log(Level.SEVERE, "error with: " + getVal(i, TIME, mainList).toString(), e);
 			}
-    	}
-    	
-    	savePlaylistToFile(Data.playlistFileName);
-    }
+		}
+		return false;
+	}
     
     void clearNotNumbered() {
     	for (int i = mainList.getRowCount() - 1; i >= 0; i--){
@@ -1298,7 +1378,7 @@ public class PlaylistFrame extends BaseFrame {
     		JOptionPane.showMessageDialog(this, "No Song Selected!");
     	else {
     		if (main && !(boolean)getVal(selectedIndex, 0, mainList)){
-    			val answer = JOptionPane.showConfirmDialog(this, "Song wasn's played yet, still want to remove it?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+    			val answer = JOptionPane.showConfirmDialog(this, "Song wasn't played yet, still want to remove it?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
     			if (answer == JOptionPane.NO_OPTION)
     				return;
     		}
@@ -1420,38 +1500,46 @@ public class PlaylistFrame extends BaseFrame {
     	mainModel.insertRow(Math.min(i + 1, mainList.getRowCount()), request);
     	savePlaylistToFile(Data.playlistFileName);
     }
-    
-    
-    private void playKaraokeSong()  throws Exception 
+
+
+	private void playKaraokeSong() {
+		playKaraokeSong(false);
+	}
+    private void playKaraokeSong(boolean stopThenStart)
     {
-    	if (btnPlayMain.getText().equals("Stop")){
-    		btnPlayMain.setText("Play");
-    		btnPlayGap.setVisible(true);
-    		btnContinuePlayGap.setVisible(true);
-    		stopMPC();
-    		return;
-    	}
-    	if (mainList.getSelectedRow() == -1){
-    		JOptionPane.showMessageDialog(this, "No Song Was Selected!");
-    	}
-    	else {
-    		val selectedRowIndex = mainList.getSelectedRow();
-    		if ((boolean)getVal(selectedRowIndex, 0, mainList)){
-    			val answer = JOptionPane.showConfirmDialog(this, "Song already played, would you like to play it again?", "Duplicate Song Play", JOptionPane.YES_NO_OPTION);
-    			if (answer == JOptionPane.NO_OPTION)
-    				return;
-    		}
-//    		stopCurrPlay();
-    		btnPlayMain.setText("Stop");
-    		btnPlayGap.setVisible(false);
-    		btnContinuePlayGap.setVisible(false);
-    		playKaraoke(selectedRowIndex);
-    	}
+		try {
+			if (btnPlayMain.getText().equals("Stop")){
+				btnPlayMain.setText("Play");
+				btnPlayGap.setVisible(true);
+				btnContinuePlayGap.setVisible(true);
+				stopMPC();
+				if (!stopThenStart) return;
+			}
+			if (mainList.getSelectedRow() == -1){
+				JOptionPane.showMessageDialog(this, "No Song Was Selected!");
+			}
+			else {
+				val selectedRowIndex = mainList.getSelectedRow();
+				if ((boolean)getVal(selectedRowIndex, 0, mainList)){
+					val answer = JOptionPane.showConfirmDialog(this, "Song already played, would you like to play it again?", "Duplicate Song Play", JOptionPane.YES_NO_OPTION);
+					if (answer == JOptionPane.NO_OPTION)
+						return;
+				}
+				//    		stopCurrPlay();
+				btnPlayMain.setText("Stop");
+				btnPlayGap.setVisible(false);
+				btnContinuePlayGap.setVisible(false);
+				playKaraoke(selectedRowIndex);
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "Exception", e1);;
+		}
     }
     
     private void playKaraoke(int selectedRowIndex) throws Exception{
     	isPlayingGap = false;
-		setVal(true, selectedRowIndex, 0);
+		setVal(true, selectedRowIndex, PLAYED);
 		
 		if (!getVal(selectedRowIndex, EMAIL, mainList).toString().equals("none") && isCamEnabled()){
 			startRecording(getVal(selectedRowIndex, PERF, mainList).toString(), 
@@ -1460,7 +1548,7 @@ public class PlaylistFrame extends BaseFrame {
 		}
 		playASong((String)getVal(selectedRowIndex, SONG, mainList), (String)getVal(selectedRowIndex, FILE, mainList), "Karaoke");
 		mainModel.moveRow(selectedRowIndex, selectedRowIndex, mainList.getRowCount() - 1);
-		clearPlayed();
+		//clearPlayed();
 		updateWaitingTimes();
 		savePlaylistToFile(Data.playlistFileName);
     }
@@ -1628,12 +1716,22 @@ public class PlaylistFrame extends BaseFrame {
     	btnPlayMain.setText("Play");
     	btnPlayGap.setVisible(true);
 		btnContinuePlayGap.setVisible(true);
+
+		//update statuses and gui for auto-pilot, in case all manual songs are done
+		if (isAutoPilot) {
+			hasManualSongs = hasPendingManualSongs();
+			if (!hasManualSongs)
+				switchGuiToAutoPilot();
+		}
+
     	if (gapList.getRowCount() == 0)
     		return;
     	if (!shouldContinueGap){
     		shouldContinueGap = true;
     		return;
     	}
+
+
     	SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
@@ -1737,5 +1835,27 @@ public class PlaylistFrame extends BaseFrame {
     		return val;
     	}
     }
+}
+
+//A hack to make a row selected when right-clicked. Taken from http://www.codejava.net/java-se/swing/jtable-popup-menu-example
+class TableMouseListener extends MouseAdapter {
+
+	private JTable table;
+
+	public TableMouseListener(JTable table) {
+		this.table = table;
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
+		// selects the row at which point the mouse is clicked
+		Point point = event.getPoint();
+		int currentRow = table.rowAtPoint(point);
+		if (currentRow<0) {
+			//the mouse is not on a row. Close the poppup
+		} else {
+			table.setRowSelectionInterval(currentRow, currentRow);
+		}
+	}
 }
 
