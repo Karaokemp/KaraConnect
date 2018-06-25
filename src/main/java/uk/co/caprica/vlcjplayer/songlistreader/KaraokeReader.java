@@ -8,15 +8,27 @@ import java.util.List;
 
 import org.h2.tools.DeleteDbFiles;
 
+import javax.swing.*;
+
 public class KaraokeReader {
 
 	static List<String> songsList;
 	public static String SONGS_LIST_FILE = "SongsList.csv";
 	
-	public static void readSongs(String rootDir) throws Exception {
+	public static void readSongs(String rootDir, boolean flushExistingDataFirst) throws Exception {
 		songsList = new ArrayList<String>(30300);
 		File root = new File(rootDir);
-		DeleteDbFiles.execute(".", DB.DB_NAME, true);
+
+		JOptionPane msg = new JOptionPane("Working. This may take a while.", JOptionPane.INFORMATION_MESSAGE);
+		final JDialog dlg = msg.createDialog("Scanning root directory "+(flushExistingDataFirst ? "from scratch":"for new songs")+"...");
+		dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() { dlg.setVisible(true); }
+		}).start();
+
+		if (flushExistingDataFirst) DeleteDbFiles.execute(".", DB.DB_NAME, true);
 		DB.init();
 		
 		readSongs(root);
@@ -29,8 +41,10 @@ public class KaraokeReader {
 		}
 		
 		ps.close();
-		
-		DB.insertFiles(songsList);
+
+		DB.insertSongs(songsList, true);
+
+		dlg.setVisible(false);
 	}
 	
 	static void readSongs(File curDir)

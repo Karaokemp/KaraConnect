@@ -65,7 +65,7 @@ public class Wachutu {
     }
 
     @SuppressWarnings("unchecked")
-	private static void startRecursiveWatcher() throws IOException {
+	private static void startRecursiveWatcher() {
 
         final Map<WatchKey, Path> keys = new HashMap<>();
 
@@ -116,7 +116,7 @@ public class Wachutu {
                                 final File f = absPath.toFile();
                                 LOGGER.info("Detected new file " + f.getAbsolutePath());
                                 if (filter.accept(f)) {
-                                	DB.insertFiles(f.getAbsolutePath());
+                                	DB.insertSongs(f.getAbsolutePath());
                                 	LOGGER.info("Added new file " + f.getAbsolutePath());
                                 }
                             }

@@ -68,10 +68,18 @@ public class RestService {
 			System.out.println(query);
 			return mapper.writeValueAsString(DB.search(query));
 		});
-		
+
+		get("/suggestions", (req, res) -> {
+			//val query = req.queryParams("query");
+			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
+			System.out.println("suggestions");
+			return mapper.writeValueAsString(DB.searchTop());
+		});
+
 		post("/KaraConnect/requestSong", "application/json", (req, res) -> {
 			val reqBody = mapper.readValue(new String(req.bodyAsBytes(), "UTF-8"), Req.class);
 			val songFile = DB.getSong(reqBody.songIndex);
+			DB.updateThatSongWasSelected(reqBody.songIndex); //decided to timestamp the song when selected, instead of when actually played.
 			val perfNumber = PlaylistFrame.getNextSerial();
 			val numberInline = PlaylistFrame.addSong(false,
 													 reqBody.performerName,
