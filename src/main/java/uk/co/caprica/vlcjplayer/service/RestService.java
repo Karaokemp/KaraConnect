@@ -29,6 +29,7 @@ public class RestService {
 	private static final ObjectMapper mapper = new ObjectMapper();
 	
 	static {
+		port(80);
 		get("/KaraConnect/testConnection", (req, res) -> "Hello World");
 
 		
