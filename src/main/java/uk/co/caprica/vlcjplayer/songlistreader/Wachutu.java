@@ -126,12 +126,13 @@ public class Wachutu {
                                 LOGGER.info("Detected new file " + f.getAbsolutePath());
                                 if (filter.accept(f)) {
                                 	try {
+                                		Thread.sleep(10000l);
                                 		Path newPath = Paths.get(absPath.toString().replace(LIVE_ADDING, ALREADY_ADDED));
 										Files.copy(absPath, newPath);
 										DB.insertFiles(newPath.toFile().getAbsolutePath());
 										Files.delete(absPath);
 										LOGGER.info("Added new file " + newPath.toFile().getAbsolutePath());
-                                	} catch (IOException e1) {
+                                	} catch (IOException | InterruptedException e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
