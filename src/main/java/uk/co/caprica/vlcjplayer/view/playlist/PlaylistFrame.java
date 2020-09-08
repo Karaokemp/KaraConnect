@@ -82,6 +82,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -199,7 +200,7 @@ public class PlaylistFrame extends BaseFrame {
     boolean isAnnouncing = false;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy HH-mm");
 	JTextField txtRecFolder;
-	static DateTimeFormatter dateFormat = DateTimeFormat.forPattern("HH:mm:ss");
+	static DateTimeFormatter dateFormat = DateTimeFormat.forPattern("HH:mm:ss").withZone(DateTimeZone.forID("Asia/Jerusalem"));
 	KaraRecorder recorder;
 	long duration;
 	
@@ -742,14 +743,12 @@ public class PlaylistFrame extends BaseFrame {
         }
     }
     
-    @SuppressWarnings("deprecation")
 	void updateWaitingTimes(){
-    	val now = new Date().getTime();
+    	val now = System.currentTimeMillis();
     	for (int i = mainList.getRowCount() - 1; i >= 0; i--){
     		if (!(boolean)getVal(i, 0, mainList)){
-    			val interval = new Date(now - Long.valueOf(getVal(i, TIME, mainList).toString()));
-    			interval.setHours(interval.getHours());
-    			setVal(getWait(dateFormat.print(interval.getTime())), i, WAIT);
+    			val interval = now - Long.valueOf(getVal(i, TIME, mainList).toString());
+    			setVal(getWait(dateFormat.print(interval)), i, WAIT);
     		}
     	}
     }

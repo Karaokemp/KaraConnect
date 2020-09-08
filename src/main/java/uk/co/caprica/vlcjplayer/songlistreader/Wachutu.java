@@ -1,8 +1,6 @@
 package uk.co.caprica.vlcjplayer.songlistreader;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +8,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -32,7 +31,7 @@ public class Wachutu {
 	
 	public static final Logger LOGGER = Logger.getLogger(Wachutu.class.getName());
 
-    private static File rootFolder;
+    private static File liveAddingFolder, alreadyAddedFolder;
 
     private static WatchService watcher;
 
@@ -40,9 +39,19 @@ public class Wachutu {
     
     private static final KaraFilter filter = new KaraFilter();
     
+    private static final String LIVE_ADDING = "liveAddingSongs", ALREADY_ADDED = "alreadyAdded";
+    
     public static void init(String root) throws IOException {
     	try {
-			rootFolder = new File(root);
+			liveAddingFolder = new File(root + "/" + LIVE_ADDING);
+			if (!liveAddingFolder.exists()) {
+				liveAddingFolder.mkdir();
+			}
+			alreadyAddedFolder = new File(root + "/" + ALREADY_ADDED);
+			if (!alreadyAddedFolder.exists()) {
+				alreadyAddedFolder.mkdir();
+			}
+			
 			watcher = FileSystems.getDefault().newWatchService();
 			executor = Executors.newSingleThreadExecutor();
 			startRecursiveWatcher();
@@ -78,7 +87,7 @@ public class Wachutu {
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                         LOGGER.info("registering " + dir + " in watcher service");
-                        WatchKey watchKey = dir.register(watcher, new WatchEvent.Kind[]{ENTRY_CREATE, ENTRY_DELETE}, SensitivityWatchEventModifier.HIGH);
+                        WatchKey watchKey = dir.register(watcher, new WatchEvent.Kind[]{ENTRY_CREATE}, SensitivityWatchEventModifier.HIGH);
                         keys.put(watchKey, dir);
                         return FileVisitResult.CONTINUE;
                     }
@@ -88,7 +97,7 @@ public class Wachutu {
             }
         };
 
-        register.accept(rootFolder.toPath());
+        register.accept(liveAddingFolder.toPath());
 
         executor.submit(() -> {
             while (true) {
@@ -106,7 +115,7 @@ public class Wachutu {
                 }
 
                 key.pollEvents().stream()
-                        .filter(e -> (e.kind() != OVERFLOW))
+                        .filter(e -> (e.kind() == ENTRY_CREATE))
                         .map(e -> ((WatchEvent<Path>) e).context())
                         .forEach(p -> {
                             final Path absPath = dir.resolve(p);
@@ -116,8 +125,18 @@ public class Wachutu {
                                 final File f = absPath.toFile();
                                 LOGGER.info("Detected new file " + f.getAbsolutePath());
                                 if (filter.accept(f)) {
-                                	DB.insertFiles(f.getAbsolutePath());
-                                	LOGGER.info("Added new file " + f.getAbsolutePath());
+                                	try {
+                                		Thread.sleep(10000l);
+                                		Path newPath = Paths.get(absPath.toString().replace(LIVE_ADDING, ALREADY_ADDED));
+										Files.copy(absPath, newPath);
+										DB.insertFiles(newPath.toFile().getAbsolutePath());
+										Files.delete(absPath);
+										LOGGER.info("Added new file " + newPath.toFile().getAbsolutePath());
+                                	} catch (IOException | InterruptedException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+                                	
                                 }
                             }
                         });
