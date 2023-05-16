@@ -12,7 +12,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mortbay.jetty.HttpHeaders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
