@@ -80,7 +80,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.commons.lang.WordUtils;
+//import org.apache.commons.lang3.WordUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -1485,8 +1485,8 @@ public class PlaylistFrame extends BaseFrame {
 			    		savedDir.mkdirs();
 			    	@Cleanup PrintStream ps = new PrintStream(savedDir.getAbsolutePath() + "/" + fileName + ".email", "UTF-8");
 					ps.println(email);
-					ps.println(WordUtils.capitalizeFully(performer));
-					ps.println(WordUtils.capitalizeFully(song));
+//					ps.println(WordUtils.capitalizeFully(performer));
+//					ps.println(WordUtils.capitalizeFully(song));
 					ps.println(time.split(" ")[0]);
 					
 					OnAirControl.onAir();
