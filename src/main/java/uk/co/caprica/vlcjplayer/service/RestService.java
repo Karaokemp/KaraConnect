@@ -56,6 +56,13 @@ public class RestService {
 			return new String(Files.readAllBytes(Paths.get("ready.html")), Charset.forName("UTF-8"));
 		});
 		
+		get("/KaraConnect/find", (req, res) -> {
+			val query = req.queryParams("query");
+			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
+			System.out.println(query);
+			return mapper.writeValueAsString(DB.search(query));
+		});
+
 		get("/find", (req, res) -> {
 			val query = req.queryParams("query");
 			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -63,7 +70,7 @@ public class RestService {
 			return mapper.writeValueAsString(DB.search(query));
 		});
 		
-		post("/requestSong", "application/json", (req, res) -> {
+		post("/KaraConnect/requestSong", "application/json", (req, res) -> {
 			val reqBody = mapper.readValue(new String(req.bodyAsBytes(), "UTF-8"), Req.class);
 			val songFile = DB.getSong(reqBody.songIndex);
 			val perfNumber = PlaylistFrame.getNextSerial();
@@ -79,6 +86,24 @@ public class RestService {
 			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
 			return mapper.writeValueAsString(new Res(StringUtils.isEmpty(perfNumber) ? null : Integer.parseInt(perfNumber), numberInline));
 			
+		});
+
+		post("/requestSong", "application/json", (req, res) -> {
+			val reqBody = mapper.readValue(new String(req.bodyAsBytes(), "UTF-8"), Req.class);
+			val songFile = DB.getSong(reqBody.songIndex);
+			val perfNumber = PlaylistFrame.getNextSerial();
+			val numberInline = PlaylistFrame.addSong(false,
+					reqBody.performerName,
+					DB.cutSongName(songFile),
+					songFile,
+					String.valueOf(new Date().getTime()),
+					StringUtils.isEmpty(reqBody.email) ? "none" : reqBody.email,
+					new PlaylistFrame.WaitingTime("00:00:00"),
+					perfNumber,
+					0l);
+			res.header(HttpHeaders.CONTENT_TYPE, "application/json");
+			return mapper.writeValueAsString(new Res(StringUtils.isEmpty(perfNumber) ? null : Integer.parseInt(perfNumber), numberInline));
+
 		});
 		
 		options("/*", (request, response) -> {
